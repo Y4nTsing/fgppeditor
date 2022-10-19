@@ -74,9 +74,9 @@ def modifyFGPPPrecedence(c,fgppName,pValue,rootDomainNamingContext):
 #c,rootDomainNamingContext=ldapAuth('192.168.123.123',"domain\\administrator","aad3b435b51404eeaad3b435b51404ee:32ed87bdb5fdc5e9cba88547376818d4",'hash')
 #getFGPP(c,rootDomainNamingContext)
 #modifyFGPPReversibleEncryption(c,'test1',rootDomainNamingContext)
-#modifyFGPPAppliesTo(c,'test1',"CN=tom,CN=Users,DC=domain,DC=cn",rootDomainNamingContext)
+#modifyFGPPAppliesTo(c,'test1',"CN=tom,CN=Users,DC=testdomain,DC=test",rootDomainNamingContext)
 #modifyFGPPPrecedence(c,'test1',123,rootDomainNamingContext)
-#addFGPP(c,'xtest',"CN=tom,CN=Users,DC=domain,DC=cn",rootDomainNamingContext)
+#addFGPP(c,'xtest',"CN=tom,CN=Users,DC=testdomain,DC=test",rootDomainNamingContext)
 #c.unbind()
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='fgppeditor.py -host 192.168.123.123 -u "domain\\admin" -p "123456" -type pass -mode xxxx')
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     parser.add_argument('-mode',help='list,add,modreverse,modapplyto,modprecedence')
     parser.add_argument('-name',help='fgpp name')
     parser.add_argument('-applyto',help='CN=tom,CN=Users,DC=testdomain,DC=test')
-    parser.add_argument('-precedence',nargs='?',const=2,type=int,help='default set to 1')
+    parser.add_argument('-precedence',type=int,help='set precedence')
     args = parser.parse_args()
 
     try:
@@ -117,7 +117,7 @@ if __name__ == '__main__':
         
 
     if(args.mode=="modreverse"):
-        if(args.name):
+        if(args.name is not None):
             c,rootDomainNamingContext=ldapAuth(args.host,args.u,args.p,args.type)
             modifyFGPPReversibleEncryption(c,args.name,rootDomainNamingContext)
             c.unbind()
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
 
     if(args.mode=="modapplyto"):
-        if(args.name and args.applyto):
+        if(args.name is not None and args.applyto is not None):
             c,rootDomainNamingContext=ldapAuth(args.host,args.u,args.p,args.type)
             modifyFGPPAppliesTo(c,args.name,args.applyto,rootDomainNamingContext)
             c.unbind()
@@ -140,12 +140,12 @@ if __name__ == '__main__':
 
 
     if(args.mode=="modprecedence"):
-        if(args.name):
+        if(args.name is not None and args.precedence is not None):
             c,rootDomainNamingContext=ldapAuth(args.host,args.u,args.p,args.type)
             modifyFGPPPrecedence(c,args.name,args.precedence,rootDomainNamingContext)
             c.unbind()
         else:
-            print("mode modprecedence need to set fgpp name")
+            print("mode modprecedence need to set fgpp name and precedence")
         quit()
         
 
